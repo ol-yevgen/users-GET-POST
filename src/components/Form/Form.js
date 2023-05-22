@@ -110,11 +110,18 @@ export const CustomForm = forwardRef((props, ref) => {
 
     const onSubmit = useCallback((data) => {
 
+        const formData = new FormData()
+        formData.append('name', data.name)
+        formData.append('email', data.email)
+        formData.append('phone', data.phone)
+        formData.append('position_id', data.position_id)
+        formData.append('photo', data.photo)
+
         request('https://frontend-test-assignment-api.abz.agency/api/v1/token', "GET")
             .then(token => setToken(token.token))
             .catch(err => console.log(err))
 
-        request("https://frontend-test-assignment-api.abz.agency/api/v1/users", "POST", data, { Authentication: `Bearer ${token}` })
+        request("https://frontend-test-assignment-api.abz.agency/api/v1/users", 'POST', formData, { Authentication: `Bearer ${token}` })
             .then(dispatch(usersCleaned()))
             .then(dispatch(fetchUsers(`https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6`)))
             .then(dispatch(usersCount()))
@@ -128,14 +135,13 @@ export const CustomForm = forwardRef((props, ref) => {
             onSubmit={handleSubmit(onSubmit)}
             ref={ref}
         >
-
             <div className={errors?.name ? `form__input ${'error__border'}` : 'form__input'}>
                 <input
                     type="text"
                     id="name"
                     autoComplete="off"
                     {...register('name',)} />
-                <span className={errors?.name ? (dirtyFields.name ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.name ? 'form__input-small' : 'form__input-big ')}>Name</span>
+                <label htmlFor="name" className={errors?.name ? (dirtyFields.name ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.name ? 'form__input-small' : 'form__input-big ')}>Name</label>
 
                 {errors?.name && <span className="form__input-error ">{errors?.name?.message || "Error!"}</span>}
             </div>
@@ -146,7 +152,7 @@ export const CustomForm = forwardRef((props, ref) => {
                     autoComplete="off"
                     {...register('email')}
                 />
-                <span className={errors?.email ? (dirtyFields.email ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.email ? 'form__input-small' : 'form__input-big ')}>Email</span>
+                <label htmlFor="email" className={errors?.email ? (dirtyFields.email ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.email ? 'form__input-small' : 'form__input-big ')}>Email</label>
                 {errors?.email && <span className="form__input-error ">{errors?.email?.message || "Error!"}</span>}
             </div>
             <div className={errors?.phone ? `form__input ${'error__border'}` : 'form__input'}>
@@ -156,7 +162,7 @@ export const CustomForm = forwardRef((props, ref) => {
                     autoComplete="off"
                     {...register('phone')}
                 />
-                <span className={errors?.phone ? (dirtyFields.phone ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.phone ? 'form__input-small' : 'form__input-big ')}>Phone</span>
+                <label htmlFor="phone" className={errors?.phone ? (dirtyFields.phone ? 'form__input-small error__text' : 'form__input-big error__text') : (dirtyFields.phone ? 'form__input-small' : 'form__input-big ')}>Phone</label>
                 {errors.phone ? <span className="form__input-error ">{errors?.phone?.message || "Error!"}</span> : <span className="phone form__input-error ">+38 (XXX) XXX - XX - XX</span>}
             </div>
 

@@ -65,7 +65,7 @@
                 outline: none;
             }
 
-            &:focus + span {
+            &:focus + label {
                 top: -13px;
                 left: -1px;
                 z-index: 1;
