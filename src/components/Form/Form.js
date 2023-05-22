@@ -191,7 +191,7 @@ export const CustomForm = forwardRef((props, ref) => {
                         );
                     }}
                 />
-                <label htmlFor="file">Upload</label>
+                <label htmlFor="photo">Upload</label>
 
                 <div className="form__file-title">
                     <span className='file__title'>{!getValues('photo') ? 'Upload your photo' : (getValues('photo').name)}</span>
