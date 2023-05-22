@@ -1,0 +1,14 @@
+@import "../../../App/styles/variables";
+
+.btn {
+    &:first-child {
+        margin-right: 10px;
+    }
+
+    &:not([disabled]):hover {
+        cursor: pointer;
+        background-color: $hoverColor;
+    }
+}
+
+

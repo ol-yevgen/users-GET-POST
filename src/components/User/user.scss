@@ -1,0 +1,39 @@
+@import "../../App/styles/variables.scss";
+@import "../../App/styles/mixins.scss";
+
+.user {
+    @include flex_container-center;
+    flex-direction: column;
+
+    width: 100%;
+    padding: 20px;
+
+    border-radius: 10px;
+    background-color: $whiteColor;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    & > img {
+        width: 70px;
+        height: 70px;
+
+        border-radius: 50%;
+    }
+
+    &__name {
+        margin: 20px 0;
+    }
+
+    & > p {
+        width: 100%;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:first-child {
+            margin: 20px 0;
+        }
+    }
+}

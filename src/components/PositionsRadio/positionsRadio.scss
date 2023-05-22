@@ -1,0 +1,74 @@
+@import "../../App/styles/variables";
+
+.form {
+    & > fieldset {
+        position: relative;
+        width: 100%;
+        margin-top: 43px;
+        text-align: left;
+        border: none;
+
+        & > div {
+            display: flex;
+            align-items: center;
+            margin-top: 7px;
+
+            & > label {
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+input[type="radio"] {
+    position: relative;
+    height: 22px;
+    width: 22px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+input[type="radio"]:focus input[type="radio"]::before{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $whiteColor;
+    border: 1px solid $secondaryColor   ;
+}
+
+input[type="radio"]::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $whiteColor;
+    border: 1px solid $borderColor;
+}
+
+input[type="radio"]:checked:before {
+    border: 1px solid $secondaryColor;
+}
+
+input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: $secondaryColor;
+    transform: translate(-50%, -50%);
+    visibility: visible;
+}

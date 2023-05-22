@@ -1,0 +1,22 @@
+@import "../../App/styles/variables";
+@import "../../App/styles/mixins.scss";
+
+.users {
+    @include flex_container-center;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 140px;
+
+    &__list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+
+        width: 100%;
+        margin: 50px 0;
+    }
+}
+
+.users-not-found {
+    margin: 140px 0;
+}
