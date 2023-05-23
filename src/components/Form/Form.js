@@ -12,7 +12,7 @@ import { fetchRadioButton } from '../../redux/features/slices/radioButtonSlice'
 import { Button } from '../UI/Button/Button';
 
 import '../PositionsRadio/positionsRadio.scss';
-import '../formInputs/formInputs.scss';
+import '../FormInputs/formInputs.scss';
 
 const schema = yup.object().shape({
     name: yup
