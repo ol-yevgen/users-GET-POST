@@ -1,5 +1,5 @@
 import { useImageLazyLoading } from '../../hooks/useImageLazyLoading';
-import placeholder from '../../App/assets/placeholder.png';
+import placeholder from '../../App/assets/photo-cover.svg';
 
 import './user.scss';
 

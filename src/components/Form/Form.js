@@ -121,13 +121,18 @@ export const CustomForm = forwardRef((props, ref) => {
             .then(token => setToken(token.token))
             .catch(err => console.log(err))
 
-        request("https://frontend-test-assignment-api.abz.agency/api/v1/users", 'POST', formData, { Authentication: `Bearer ${token}` })
+        request("https://frontend-test-assignment-api.abz.agency/api/v1/users", 'POST', formData, {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` })
             .then(dispatch(usersCleaned()))
             .then(dispatch(fetchUsers(`https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6`)))
             .then(dispatch(usersCount()))
             .catch(err => console.log(err));
         reset();
+        // eslint-disable-next-line
     }, [])
+
+    console.log(token);
 
     return (
         <form
