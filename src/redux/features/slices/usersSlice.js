@@ -42,11 +42,11 @@ const usersSlice = createSlice({
         usersCleaned: (state, ) => {
             state.users = []
         },
-        usersCreated: (state, action) => {
-            state.users.unshift(action.payload)
-        },
         usersCount: (state) => {
             state.usersCount += 1
+        },
+        usersCountReset: (state) => {
+            state.usersCount = 1
         },
         usersDeleted: (state, action) => {
             state.users = state.users.filter(item => item.id !== action.payload)
@@ -74,7 +74,7 @@ export const {
     usersFetched,
     usersFetchingError,
     usersCleaned,
-    usersCreated,
     usersCount,
+    usersCountReset,
     usersDeleted
 } = actions;

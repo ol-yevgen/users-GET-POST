@@ -82,3 +82,9 @@
 .disabled {
     background-color: $bisabledColor;
 }
+
+.request__error {
+    margin-bottom: 20px;
+    color: $errorColor;
+
+}

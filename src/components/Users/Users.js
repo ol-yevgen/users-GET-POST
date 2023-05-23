@@ -5,6 +5,8 @@ import { User } from '../User/User';
 import { Button } from "../UI/Button/Button"
 import { fetchUsers, usersCount } from "../../redux/features/slices/usersSlice";
 
+import { Spinner } from '../Spinner/Spinner';
+
 const Users = forwardRef((props, ref) => {
     const users = useSelector(state => state.users.users);
     const offset = useSelector(state => state.users.usersCount);
@@ -44,8 +46,14 @@ const Users = forwardRef((props, ref) => {
 
     const elements = renderUsersList(users);
 
+    if (usersLoadingStatus === "loading") {
+        return <Spinner />;
+    } else if (usersLoadingStatus === "error") {
+        return <h5 className="text-center mt-5">Ошибка загрузки</h5>
+    }
+
     if (users.length === 0) {
-        return <h3 className='users-not-found'>Users are not found</h3>
+        return <h3 className='users-not-found'>No any users</h3>
     }
 
     return (

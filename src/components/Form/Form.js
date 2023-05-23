@@ -1,20 +1,18 @@
-import { useForm, Controller, isValid, dirtyFields } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
-import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHttp } from '../../hooks/http.hook'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
 
-import { fetchUsers, usersCleaned, usersCount } from '../../redux/features/slices/usersSlice';
+import { fetchUsers, usersCleaned, usersCount, usersCountReset } from '../../redux/features/slices/usersSlice';
 import { fetchRadioButton } from '../../redux/features/slices/radioButtonSlice'
-import { RadioButtons, RadioButtonGroup } from '../PositionsRadio/PositionsRadio'
 
-import { MyTextInput } from '../FormInputs/FormInputs'
 import { Button } from '../UI/Button/Button';
 
-import '../PositionsRadio/positionsRadio.scss';
-import '../FormInputs/formInputs.scss';
+import '../positionsRadio/positionsRadio.scss';
+import '../formInputs/formInputs.scss';
 
 const schema = yup.object().shape({
     name: yup
@@ -45,10 +43,11 @@ const schema = yup.object().shape({
 })
 
 export const CustomForm = forwardRef((props, ref) => {
-    const [token, setToken] = useState('')
+    const [authorizedToken, setAuthorizedToken] = useState('')
+    const [tokenError, setTokenError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const radioButtons = useSelector(state => state.radioButton.radioButton);
-    const radioButtonLoadingStatus = useSelector(state => state.radioButton.radioButtonLoadingStatus);
 
     const dispatch = useDispatch();
     const { request } = useHttp();
@@ -83,6 +82,14 @@ export const CustomForm = forwardRef((props, ref) => {
         // eslint-disable-next-line
     }, []);
 
+    useEffect(() => {
+        const interval = setTimeout(() => {
+            setTokenError(false);
+        }, 3000)
+
+        return () => clearTimeout(interval)
+    }, [tokenError])
+
     const renderPositionsList = (arr) => {
         if (arr.length === 0) {
             return <h5 className="text-center mt-5">Positions not found</h5>
@@ -102,13 +109,7 @@ export const CustomForm = forwardRef((props, ref) => {
     }
     const radioButtonsList = renderPositionsList(radioButtons)
 
-    const successfullyRegistered = useCallback(() => {
-        
-        return isValid ? props.setFormSubmited(true) : null
-        // eslint-disable-next-line
-    }, [isValid])
-
-    const onSubmit = useCallback((data) => {
+    const onSubmit = useCallback(async (data) => {
 
         const formData = new FormData()
         formData.append('name', data.name)
@@ -117,22 +118,51 @@ export const CustomForm = forwardRef((props, ref) => {
         formData.append('position_id', data.position_id)
         formData.append('photo', data.photo)
 
-        request('https://frontend-test-assignment-api.abz.agency/api/v1/token', "GET")
-            .then(token => setToken(token.token))
+        await request('https://frontend-test-assignment-api.abz.agency/api/v1/token', "GET")
+            .then(token => setAuthorizedToken(token.token))
             .catch(err => console.log(err))
+        
+        const postUsers = async (url) => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Token': authorizedToken
+                    },
+                });
 
-        request("https://frontend-test-assignment-api.abz.agency/api/v1/users", 'POST', formData, {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` })
-            .then(dispatch(usersCleaned()))
-            .then(dispatch(fetchUsers(`https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6`)))
-            .then(dispatch(usersCount()))
-            .catch(err => console.log(err));
-        reset();
+                if (!response.ok) {
+                    switch (response.status) {
+                        case 401: 
+                            setTokenError(true)
+                            break
+                        default: 
+                            return
+                    }
+                    // throw new Error(`Could not fetch ${url}, status: ${response.status}`);
+                } else {
+                    props.setFormSubmited(true)
+                    dispatch(usersCleaned())
+                    dispatch(usersCountReset())
+                    reset();
+                    dispatch(fetchUsers(`https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6`))
+                    dispatch(usersCount())
+                }
+
+                const data = await response.json();
+
+                setErrorMessage(data.message);
+                return data;
+            } catch (e) {
+                throw e;
+            }
+        }
+
+        postUsers("https://frontend-test-assignment-api.abz.agency/api/v1/users")
+
         // eslint-disable-next-line
     }, [])
-
-    console.log(token);
 
     return (
         <form
@@ -203,15 +233,18 @@ export const CustomForm = forwardRef((props, ref) => {
                 </div>
                 {errors.photo && <span className="form__input-error">{errors?.photo?.message || "Error!"}</span>}
             </div>
+            {tokenError ? <span className="request__error">{errorMessage}</span> : null}
 
             <Button
                 text="Sign Up"
                 submit="submit"
                 className={!isValid ? 'disabled' : ''}
-                func={successfullyRegistered}
+                func={onSubmit}
                 disabled={!isValid}
             />
-        </form>
+        </form >
 
     )
 })
+
+ 
